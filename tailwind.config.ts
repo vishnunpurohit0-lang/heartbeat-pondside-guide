@@ -19,6 +19,15 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // Medical Design System
+        "medical-blue": "hsl(var(--medical-blue))",
+        "medical-blue-light": "hsl(var(--medical-blue-light))",
+        "medical-blue-dark": "hsl(var(--medical-blue-dark))",
+        "heart-red": "hsl(var(--heart-red))",
+        "heart-red-light": "hsl(var(--heart-red-light))",
+        "medical-gray": "hsl(var(--medical-gray))",
+        "medical-gray-dark": "hsl(var(--medical-gray-dark))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -84,6 +93,22 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-heart": "pulse 2s ease-in-out infinite",
+        "float": "float 3s ease-in-out infinite",
+      },
+      backgroundImage: {
+        "gradient-medical": "var(--gradient-medical)",
+        "gradient-heart": "var(--gradient-heart)",  
+        "gradient-blur-red": "var(--gradient-blur-red)",
+      },
+      boxShadow: {
+        "medical": "var(--shadow-medical)",
+        "heart": "var(--shadow-heart)",
+        "soft": "var(--shadow-soft)",
+      },
+      transitionTimingFunction: {
+        "smooth": "var(--transition-smooth)",
+        "bounce": "var(--transition-bounce)",
       },
     },
   },
