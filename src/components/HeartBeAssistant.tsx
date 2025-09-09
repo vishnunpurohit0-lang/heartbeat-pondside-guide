@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { Mic, MicOff, Volume2, VolumeX } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Mic, MicOff, Volume2, VolumeX, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export const HeartBeAssistant = () => {
   const [isListening, setIsListening] = useState(false);
@@ -9,32 +13,184 @@ export const HeartBeAssistant = () => {
   const [currentMessage, setCurrentMessage] = useState(
     "Hi! I'm Heart BE, your personal heart health guide. Ask me about exercises that keep your heart healthy!"
   );
+  const [apiKey, setApiKey] = useState("");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  
+  const { toast } = useToast();
+  const recognitionRef = useRef<any>(null);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
+
+  useEffect(() => {
+    // Load API key from localStorage
+    const savedApiKey = localStorage.getItem("openai_api_key");
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
+
+    // Initialize speech synthesis
+    if ('speechSynthesis' in window) {
+      synthRef.current = window.speechSynthesis;
+    }
+
+    // Initialize speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setTranscript(transcript);
+        handleUserInput(transcript);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        toast({
+          title: "Speech Recognition Error",
+          description: "Could not understand audio. Please try again.",
+          variant: "destructive",
+        });
+      };
+    }
+  }, []);
+
+  const saveApiKey = () => {
+    localStorage.setItem("openai_api_key", apiKey);
+    setIsSettingsOpen(false);
+    toast({
+      title: "API Key Saved",
+      description: "Your OpenAI API key has been saved locally.",
+    });
+  };
+
+  const generateAIResponse = async (userInput: string) => {
+    if (!apiKey) {
+      toast({
+        title: "API Key Required",
+        description: "Please set your OpenAI API key in settings.",
+        variant: "destructive",
+      });
+      return "Please set up your OpenAI API key in the settings to use AI responses.";
+    }
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are HEART BE, a kind and supportive AI assistant that provides general, friendly information related to heart health and exercises. You do not provide medical advice or diagnoses. Always remind users to consult healthcare professionals for specific concerns. Keep responses concise and encouraging.'
+            },
+            {
+              role: 'user',
+              content: userInput
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('OpenAI API error:', error);
+      toast({
+        title: "AI Response Error",
+        description: "Could not generate AI response. Please check your API key.",
+        variant: "destructive",
+      });
+      return "I'm having trouble connecting right now. Please try again later.";
+    }
+  };
+
+  const handleUserInput = async (input: string) => {
+    const response = await generateAIResponse(input);
+    setCurrentMessage(response);
+    speakMessage(response);
+  };
 
   const toggleListening = () => {
-    setIsListening(!isListening);
-    // Here you would integrate with speech recognition API
+    if (!recognitionRef.current) {
+      toast({
+        title: "Speech Recognition Unavailable",
+        description: "Your browser doesn't support speech recognition.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognitionRef.current.start();
+      toast({
+        title: "Listening...",
+        description: "Speak now, I'm listening!",
+      });
+    }
   };
 
   const toggleSpeaking = () => {
-    setIsSpeaking(!isSpeaking);
-    if (!isSpeaking) {
-      // Here you would integrate with ElevenLabs TTS API
+    if (isSpeaking) {
+      synthRef.current?.cancel();
+      setIsSpeaking(false);
+    } else {
       speakMessage(currentMessage);
     }
   };
 
   const speakMessage = (message: string) => {
-    // Placeholder for ElevenLabs integration
-    setIsSpeaking(true);
-    setTimeout(() => setIsSpeaking(false), 3000);
+    if (!synthRef.current) {
+      toast({
+        title: "Speech Unavailable",
+        description: "Your browser doesn't support text-to-speech.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    synthRef.current.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    utterance.volume = 1;
+    
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    synthRef.current.speak(utterance);
   };
 
   const exerciseRecommendations = [
-    "Try 30 minutes of brisk walking daily",
-    "Swimming is excellent for cardiovascular health",
-    "Cycling helps strengthen your heart muscle",
-    "Yoga improves circulation and reduces stress",
-    "Dancing is a fun way to boost heart health"
+    "Try 30 minutes of brisk walking daily - it's great for your heart!",
+    "Swimming is excellent for cardiovascular health and gentle on joints.",
+    "Cycling helps strengthen your heart muscle while being fun and engaging.",
+    "Yoga improves circulation and reduces stress, supporting heart health.",
+    "Dancing is a fun way to boost heart health while enjoying music!"
   ];
 
   const getRandomExercise = () => {
@@ -57,15 +213,56 @@ export const HeartBeAssistant = () => {
           {isSpeaking && (
             <div className="absolute inset-0 w-24 h-24 mx-auto rounded-full border-4 border-heart-red animate-ping opacity-75"></div>
           )}
+          {isListening && (
+            <div className="absolute inset-0 w-24 h-24 mx-auto rounded-full border-4 border-medical-blue animate-pulse opacity-75"></div>
+          )}
         </div>
 
-        <h2 className="text-2xl font-bold text-heart-red mb-2">Heart BE</h2>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <h2 className="text-2xl font-bold text-heart-red">Heart BE</h2>
+          <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="p-1">
+                <Settings className="h-4 w-4 text-medical-gray-dark" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>AI Settings</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="api-key">OpenAI API Key</Label>
+                  <Input
+                    id="api-key"
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="Enter your OpenAI API key"
+                  />
+                  <p className="text-sm text-medical-gray-dark mt-2">
+                    Your API key is stored locally and never shared.
+                  </p>
+                </div>
+                <Button onClick={saveApiKey} className="w-full">
+                  Save API Key
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        
         <p className="text-medical-gray-dark mb-6">Your AI Heart Health Guide</p>
 
         <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 mb-6">
           <p className="text-foreground font-medium leading-relaxed">
             "{currentMessage}"
           </p>
+          {transcript && (
+            <p className="text-sm text-medical-blue mt-2 italic">
+              You said: "{transcript}"
+            </p>
+          )}
         </div>
 
         <div className="flex gap-4 justify-center mb-6">
