@@ -5,6 +5,10 @@ import { ExerciseCard } from "@/components/ExerciseCard";
 import { LabReportUpload } from "@/components/LabReportUpload";
 import { HeartBeAssistant } from "@/components/HeartBeAssistant";
 import { HeartHealthChecker } from "@/components/HeartHealthChecker";
+import { HeartRateMonitor } from "@/components/HeartRateMonitor";
+import { PersonalizedWorkouts } from "@/components/PersonalizedWorkouts";
+import { HealthAchievements } from "@/components/HealthAchievements";
+import { EmergencyAlert } from "@/components/EmergencyAlert";
 import heroImage from "@/assets/heart-hero.jpg";
 
 interface Exercise {
@@ -192,34 +196,34 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Lab Report Upload */}
-      <section className="medical-section bg-white">
-        <div className="medical-container">
+      <main className="medical-container">
+        {/* Innovative Health Features */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-16">
+          <HeartRateMonitor />
+          <PersonalizedWorkouts />
+        </div>
+
+        {/* AI Assistant and Lab Upload Section */}
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <HeartBeAssistant />
           <LabReportUpload />
         </div>
-      </section>
 
-      {/* Heart BE Assistant */}
-      <section className="medical-section bg-medical-gray">
-        <div className="medical-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Meet Your AI Health Guide
-            </h2>
-            <p className="text-medical-gray-dark text-lg">
-              Get personalized exercise recommendations from our AI assistant
-            </p>
-          </div>
-          <HeartBeAssistant />
+        {/* Emergency Alert System */}
+        <div className="mb-16">
+          <EmergencyAlert />
         </div>
-      </section>
 
-      {/* Heart Health Checker */}
-      <section className="medical-section bg-white">
-        <div className="medical-container">
+        {/* Health Achievements */}
+        <div className="mb-16">
+          <HealthAchievements />
+        </div>
+
+        {/* Heart Health Checker */}
+        <div className="mb-16">
           <HeartHealthChecker />
         </div>
-      </section>
+      </main>
 
       {/* Footer */}
       <footer className="bg-foreground py-12">

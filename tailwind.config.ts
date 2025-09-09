@@ -26,8 +26,12 @@ export default {
         "medical-blue-dark": "hsl(var(--medical-blue-dark))",
         "heart-red": "hsl(var(--heart-red))",
         "heart-red-light": "hsl(var(--heart-red-light))",
+        "medical-gold": "hsl(var(--medical-gold))",
         "medical-gray": "hsl(var(--medical-gray))",
         "medical-gray-dark": "hsl(var(--medical-gray-dark))",
+        "medical-green": "hsl(var(--medical-green))",
+        "medical-purple": "hsl(var(--medical-purple))",
+        "medical-orange": "hsl(var(--medical-orange))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -100,11 +104,14 @@ export default {
         "gradient-medical": "var(--gradient-medical)",
         "gradient-heart": "var(--gradient-heart)",  
         "gradient-blur-red": "var(--gradient-blur-red)",
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-subtle": "var(--gradient-subtle)",
       },
       boxShadow: {
         "medical": "var(--shadow-medical)",
         "heart": "var(--shadow-heart)",
         "soft": "var(--shadow-soft)",
+        "elegant": "var(--shadow-elegant)",
       },
       transitionTimingFunction: {
         "smooth": "var(--transition-smooth)",

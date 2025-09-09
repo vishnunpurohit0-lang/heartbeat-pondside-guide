@@ -21,18 +21,27 @@
     --heart-red-blur: 0 70% 55%;
 
     /* Medical Gray Scale */
-    --medical-gray: 210 10% 96%;
-    --medical-gray-dark: 210 15% 60%;
+  --medical-gold: 43 96% 56%;
+  --medical-gray: 210 40% 92%;
+  --medical-gray-dark: 215 25% 27%;
+  
+  /* Additional Colors for Innovation */
+  --medical-green: 145 63% 49%;
+  --medical-purple: 262 83% 58%;
+  --medical-orange: 25 95% 53%;
 
     /* Gradients */
     --gradient-medical: linear-gradient(135deg, hsl(var(--medical-blue-light)), hsl(var(--background)));
     --gradient-heart: linear-gradient(135deg, hsl(var(--heart-red-light)), hsl(var(--background)));
     --gradient-blur-red: linear-gradient(135deg, hsla(var(--heart-red-blur), 0.1), hsla(var(--heart-red-blur), 0.05));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--medical-blue)), hsl(var(--heart-red)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--medical-gray)));
 
     /* Shadows */
     --shadow-medical: 0 4px 20px hsla(var(--medical-blue), 0.08);
     --shadow-heart: 0 4px 20px hsla(var(--heart-red), 0.12);
     --shadow-soft: 0 2px 10px hsla(210, 15%, 20%, 0.04);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--medical-blue) / 0.3);
 
     /* Animation */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
