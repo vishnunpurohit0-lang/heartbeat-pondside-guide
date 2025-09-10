@@ -4,7 +4,6 @@ import { ExerciseCard } from "@/components/ExerciseCard";
 import { LabReportUpload } from "@/components/LabReportUpload";
 import { HeartBeAssistant } from "@/components/HeartBeAssistant";
 import { HeartHealthChecker } from "@/components/HeartHealthChecker";
-import { HeartRateMonitor } from "@/components/HeartRateMonitor";
 import { PersonalizedWorkouts } from "@/components/PersonalizedWorkouts";
 import { HealthAchievements } from "@/components/HealthAchievements";
 import { EmergencyAlert } from "@/components/EmergencyAlert";
@@ -157,8 +156,7 @@ const Index = () => {
 
       <main className="medical-container">
         {/* Innovative Health Features */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-16">
-          <HeartRateMonitor />
+        <div className="grid lg:grid-cols-1 gap-8 mb-16">
           <PersonalizedWorkouts />
         </div>
 
