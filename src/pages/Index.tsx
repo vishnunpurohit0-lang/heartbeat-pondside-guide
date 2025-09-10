@@ -189,7 +189,7 @@ const Index = () => {
             <div className="p-2 bg-heart-red rounded-full">
               <Heart className="h-6 w-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-white">HEART BEAT</span>
+            <span className="text-2xl font-bold text-white">HEART HEALTH CENTER</span>
           </div>
           <p className="text-gray-400 mb-4">
             Your trusted companion for cardiovascular health and wellness
