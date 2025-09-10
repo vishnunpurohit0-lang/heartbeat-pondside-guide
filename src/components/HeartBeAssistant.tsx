@@ -123,10 +123,61 @@ export const HeartBeAssistant = () => {
     }
   };
 
+  const getHealthResponse = (input: string): string | null => {
+    const lowerInput = input.toLowerCase();
+    
+    if (lowerInput.includes("hello") || lowerInput.includes("hi")) {
+      return "Hello! How are you feeling today?";
+    }
+    
+    if (lowerInput.includes("bp") || lowerInput.includes("blood pressure")) {
+      return "Normal BP is around 120/80 mmHg. Do you want tips to maintain it?";
+    }
+    
+    if (lowerInput.includes("sugar") || lowerInput.includes("glucose")) {
+      return "Normal fasting sugar is 70–100 mg/dL. High sugar may need lifestyle changes.";
+    }
+    
+    if (lowerInput.includes("spo2") || lowerInput.includes("oxygen")) {
+      return "Normal SpO₂ is 95–100%. If it's below 90%, consult a doctor immediately.";
+    }
+    
+    if (lowerInput.includes("cholesterol")) {
+      return "Ideal cholesterol is below 200 mg/dL. Reduce oily food for better control.";
+    }
+    
+    if (lowerInput.includes("doctor")) {
+      return "Always consult a certified doctor before taking any medicines.";
+    }
+    
+    if (lowerInput.includes("exit") || lowerInput.includes("bye") || lowerInput.includes("goodbye")) {
+      return "Take care! Stay healthy. 💙";
+    }
+    
+    return null; // No predefined response found
+  };
+
   const handleUserInput = async (input: string) => {
-    const response = await generateAIResponse(input);
-    setCurrentMessage(response);
-    speakMessage(response);
+    // First check for predefined health responses
+    const healthResponse = getHealthResponse(input);
+    
+    if (healthResponse) {
+      setCurrentMessage(healthResponse);
+      speakMessage(healthResponse);
+      return;
+    }
+    
+    // If no predefined response, try AI response
+    if (apiKey) {
+      const response = await generateAIResponse(input);
+      setCurrentMessage(response);
+      speakMessage(response);
+    } else {
+      // Fallback when no API key
+      const fallbackResponse = "I'm not sure about that. Can you ask me about BP, sugar, SpO₂, or cholesterol? You can also set up AI responses in settings.";
+      setCurrentMessage(fallbackResponse);
+      speakMessage(fallbackResponse);
+    }
   };
 
   const toggleListening = () => {
