@@ -178,6 +178,14 @@ const Index = () => {
 
         {/* Heart Health Checker */}
         <div className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              HEART HEALTH CENTER
+            </h2>
+            <p className="text-medical-gray-dark text-lg">
+              Enter your vital signs for AI-powered health insights
+            </p>
+          </div>
           <HeartHealthChecker />
         </div>
       </main>
