@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Heart, Stethoscope, Activity } from "lucide-react";
-import { SearchBar } from "@/components/SearchBar";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import { LabReportUpload } from "@/components/LabReportUpload";
 import { HeartBeAssistant } from "@/components/HeartBeAssistant";
@@ -72,73 +71,7 @@ const heartExercises: Exercise[] = [
 ];
 
 const Index = () => {
-  const [filteredExercises, setFilteredExercises] = useState<Exercise[]>(heartExercises);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-
-  const handleSearch = (query: string) => {
-    if (!query.trim()) {
-      setFilteredExercises(heartExercises);
-      return;
-    }
-
-    const searchTerm = query.toLowerCase();
-    
-    // Enhanced search with scoring system
-    const scoredExercises = heartExercises.map(exercise => {
-      let score = 0;
-      
-      // Exact name match gets highest score
-      if (exercise.name.toLowerCase() === searchTerm) score += 100;
-      // Name contains search term
-      else if (exercise.name.toLowerCase().includes(searchTerm)) score += 50;
-      
-      // Description contains search term
-      if (exercise.description.toLowerCase().includes(searchTerm)) score += 30;
-      
-      // Benefits contain search term
-      const benefitMatches = exercise.benefits.filter(benefit => 
-        benefit.toLowerCase().includes(searchTerm)
-      ).length;
-      score += benefitMatches * 20;
-      
-      // Related terms matching (semantic search)
-      const relatedTerms = {
-        'cardio': ['brisk walking', 'swimming', 'cycling', 'dancing', 'interval training'],
-        'strength': ['interval training', 'cycling'],
-        'flexibility': ['yoga'],
-        'stress': ['yoga', 'brisk walking'],
-        'heart rate': ['interval training', 'cycling', 'swimming'],
-        'low impact': ['swimming', 'yoga', 'brisk walking'],
-        'fun': ['dancing'],
-        'quick': ['interval training'],
-        'gentle': ['yoga', 'brisk walking'],
-        'beginner': ['brisk walking', 'yoga', 'dancing'],
-        'advanced': ['interval training']
-      };
-      
-      // Check for related terms
-      Object.entries(relatedTerms).forEach(([term, exercises]) => {
-        if (searchTerm.includes(term)) {
-          if (exercises.some(ex => exercise.name.toLowerCase().includes(ex))) {
-            score += 15;
-          }
-        }
-      });
-      
-      // Difficulty matching
-      if (exercise.difficulty.toLowerCase().includes(searchTerm)) score += 25;
-      
-      return { ...exercise, score };
-    });
-
-    // Filter exercises with score > 0 and sort by score
-    const filtered = scoredExercises
-      .filter(exercise => exercise.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map(({ score, ...exercise }) => exercise);
-    
-    setFilteredExercises(filtered);
-  };
 
   const handleExerciseClick = (exercise: Exercise) => {
     setSelectedExercise(exercise);
@@ -197,21 +130,6 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Search Section */}
-      <section className="medical-section bg-white">
-        <div className="medical-container text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Find Heart-Healthy Exercises
-          </h2>
-          <p className="text-medical-gray-dark text-lg mb-12 max-w-2xl mx-auto">
-            Search through our comprehensive database of cardiovascular exercises 
-            designed to keep your heart strong and healthy
-          </p>
-          
-          <SearchBar onSearch={handleSearch} />
-        </div>
-      </section>
-
       {/* Exercises Grid */}
       <section className="bg-medical-gray py-16">
         <div className="medical-container">
@@ -225,7 +143,7 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredExercises.map(exercise => (
+            {heartExercises.map(exercise => (
               <ExerciseCard
                 key={exercise.id}
                 exercise={exercise}
@@ -234,14 +152,6 @@ const Index = () => {
             ))}
           </div>
 
-          {filteredExercises.length === 0 && (
-            <div className="text-center py-12">
-              <Heart className="h-16 w-16 text-medical-gray-dark mx-auto mb-4 opacity-50" />
-              <p className="text-xl text-medical-gray-dark">
-                No exercises found. Try a different search term.
-              </p>
-            </div>
-          )}
         </div>
       </section>
 
