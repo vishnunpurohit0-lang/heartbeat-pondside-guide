@@ -93,9 +93,6 @@ const Index = () => {
               </div>
               
               <div className="mb-8">
-                <p className="text-sm text-medical-gray-dark uppercase tracking-wider mb-2">
-                  Down That Left Side in Small Pond Side
-                </p>
                 <h2 className="text-4xl lg:text-5xl font-bold text-heart-red mb-6">
                   HEART HEALTH
                 </h2>
