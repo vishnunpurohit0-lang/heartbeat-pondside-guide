@@ -25,6 +25,7 @@ interface HeartHospital {
 
 // Mock database of heart hospitals (in a real app, this would come from an API)
 const heartHospitals: HeartHospital[] = [
+  // Major Heart Centers
   {
     id: "1",
     name: "Mayo Clinic Heart Center",
@@ -49,13 +50,15 @@ const heartHospitals: HeartHospital[] = [
     lat: 39.2969,
     lng: -76.5934
   },
+  
+  // Regional Hospitals - New York Area
   {
     id: "4",
-    name: "Cedars-Sinai Heart Institute",
-    phone: "+1-310-423-3277",
-    address: "8700 Beverly Blvd, Los Angeles, CA 90048", 
-    lat: 34.0759,
-    lng: -118.3772
+    name: "NewYork-Presbyterian Heart Hospital",
+    phone: "+1-212-305-2500",
+    address: "622 W 168th St, New York, NY 10032",
+    lat: 40.8424,
+    lng: -73.9441
   },
   {
     id: "5",
@@ -67,14 +70,24 @@ const heartHospitals: HeartHospital[] = [
   },
   {
     id: "6",
-    name: "Houston Methodist Heart Center", 
-    phone: "+1-713-790-3311",
-    address: "6565 Fannin St, Houston, TX 77030",
-    lat: 29.7097,
-    lng: -95.3968
+    name: "NYU Langone Heart Center", 
+    phone: "+1-212-263-5656",
+    address: "550 1st Ave, New York, NY 10016",
+    lat: 40.7424,
+    lng: -73.9759
   },
+  
+  // California Hospitals
   {
     id: "7",
+    name: "Cedars-Sinai Heart Institute",
+    phone: "+1-310-423-3277",
+    address: "8700 Beverly Blvd, Los Angeles, CA 90048", 
+    lat: 34.0759,
+    lng: -118.3772
+  },
+  {
+    id: "8",
     name: "Stanford Heart Center",
     phone: "+1-650-723-4000",
     address: "300 Pasteur Dr, Stanford, CA 94305",
@@ -82,12 +95,114 @@ const heartHospitals: HeartHospital[] = [
     lng: -122.1716
   },
   {
-    id: "8",
+    id: "9",
+    name: "UCSF Heart Center",
+    phone: "+1-415-476-1000",
+    address: "505 Parnassus Ave, San Francisco, CA 94143",
+    lat: 37.7627,
+    lng: -122.4581
+  },
+  
+  // Texas Hospitals
+  {
+    id: "10",
+    name: "Houston Methodist Heart Center", 
+    phone: "+1-713-790-3311",
+    address: "6565 Fannin St, Houston, TX 77030",
+    lat: 29.7097,
+    lng: -95.3968
+  },
+  {
+    id: "11",
+    name: "Baylor Scott & White Heart Center",
+    phone: "+1-214-820-0111",
+    address: "3500 Gaston Ave, Dallas, TX 75246",
+    lat: 32.7933,
+    lng: -96.7734
+  },
+  
+  // Massachusetts Hospitals
+  {
+    id: "12",
     name: "Massachusetts General Heart Center",
     phone: "+1-617-726-2000", 
     address: "55 Fruit St, Boston, MA 02114",
     lat: 42.3631,
     lng: -71.0686
+  },
+  {
+    id: "13",
+    name: "Brigham and Women's Heart Center",
+    phone: "+1-617-732-5500",
+    address: "75 Francis St, Boston, MA 02115", 
+    lat: 42.3358,
+    lng: -71.1063
+  },
+  
+  // Florida Hospitals
+  {
+    id: "14",
+    name: "Miami Heart Institute",
+    phone: "+1-305-674-2121",
+    address: "4300 Alton Rd, Miami Beach, FL 33140",
+    lat: 25.8067,
+    lng: -80.1419
+  },
+  {
+    id: "15",
+    name: "Tampa General Heart Institute",
+    phone: "+1-813-844-7000",
+    address: "1 Tampa General Cir, Tampa, FL 33606",
+    lat: 27.9443,
+    lng: -82.4663
+  },
+  
+  // Illinois Hospitals
+  {
+    id: "16",
+    name: "Northwestern Memorial Heart Center",
+    phone: "+1-312-926-2000",
+    address: "251 E Huron St, Chicago, IL 60611",
+    lat: 41.8955,
+    lng: -87.6214
+  },
+  {
+    id: "17",
+    name: "University of Chicago Heart Center",
+    phone: "+1-773-702-1000", 
+    address: "5841 S Maryland Ave, Chicago, IL 60637",
+    lat: 41.7886,
+    lng: -87.6017
+  },
+  
+  // Georgia Hospitals
+  {
+    id: "18",
+    name: "Emory Heart Center",
+    phone: "+1-404-778-5000",
+    address: "1364 Clifton Rd NE, Atlanta, GA 30322",
+    lat: 33.7892,
+    lng: -84.3225
+  },
+  
+  // Washington Hospitals  
+  {
+    id: "19",
+    name: "University of Washington Heart Center",
+    phone: "+1-206-598-3300",
+    address: "1959 NE Pacific St, Seattle, WA 98195",
+    lat: 47.6506,
+    lng: -122.3053
+  },
+  
+  // Pennsylvania Hospitals
+  {
+    id: "20",
+    name: "Hospital of University of Pennsylvania Heart Center",
+    phone: "+1-215-662-4000",
+    address: "3400 Spruce St, Philadelphia, PA 19104",
+    lat: 39.9496,
+    lng: -75.1914
   }
 ];
 
@@ -136,21 +251,30 @@ export const EmergencyAlert = () => {
   const findNearestHospitals = (userLat: number, userLng: number) => {
     setIsLoadingHospitals(true);
     
-    // Calculate distances and sort by nearest
+    // Calculate distances and filter hospitals within 100km
     const hospitalsWithDistance = heartHospitals.map(hospital => ({
       ...hospital,
       distance: calculateDistance(userLat, userLng, hospital.lat, hospital.lng)
-    })).sort((a, b) => a.distance - b.distance);
+    })).filter(hospital => hospital.distance <= 100) // Only show hospitals within 100km
+      .sort((a, b) => a.distance - b.distance);
     
-    // Get top 3 nearest hospitals
+    // Get top 3 nearest hospitals within 100km
     const nearestThree = hospitalsWithDistance.slice(0, 3);
     setNearestHospitals(nearestThree);
     setIsLoadingHospitals(false);
     
-    toast({
-      title: "Nearest Hospitals Found",
-      description: `Found ${nearestThree.length} heart hospitals near you`,
-    });
+    if (nearestThree.length > 0) {
+      toast({
+        title: "Nearest Hospitals Found",
+        description: `Found ${nearestThree.length} heart hospitals within 100km`,
+      });
+    } else {
+      toast({
+        title: "No Nearby Hospitals",
+        description: "No heart hospitals found within 100km. Call 911 for emergency care.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getLocationAndHospitals = () => {
