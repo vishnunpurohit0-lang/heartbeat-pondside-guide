@@ -23,12 +23,12 @@ interface HeartHospital {
   distance?: number;
 }
 
-// Mock database of heart hospitals (in a real app, this would come from an API)
+// Comprehensive database of cardiologist hospitals (in a real app, this would come from an API)
 const heartHospitals: HeartHospital[] = [
-  // Major Heart Centers
+  // Major Cardiology Centers
   {
     id: "1",
-    name: "Mayo Clinic Heart Center",
+    name: "Mayo Clinic Cardiology Department",
     phone: "+1-507-284-2111",
     address: "200 First St SW, Rochester, MN 55905",
     lat: 44.0225,
@@ -265,13 +265,13 @@ export const EmergencyAlert = () => {
     
     if (nearestThree.length > 0) {
       toast({
-        title: "Nearest Hospitals Found",
-        description: `Found ${nearestThree.length} heart hospitals within 100km`,
+        title: "Nearest Cardiologists Found",
+        description: `Found ${nearestThree.length} cardiologist hospitals within 100km`,
       });
     } else {
       toast({
-        title: "No Nearby Hospitals",
-        description: "No heart hospitals found within 100km. Call 911 for emergency care.",
+        title: "No Nearby Cardiologists",
+        description: "No cardiologist hospitals found within 100km. Call 911 for emergency care.",
         variant: "destructive",
       });
     }
@@ -507,12 +507,12 @@ export const EmergencyAlert = () => {
           </div>
         </div>
 
-        {/* Nearest Heart Hospitals Section */}
+        {/* Nearest Cardiologist Hospitals Section */}
         <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold flex items-center gap-2">
               <Hospital className="h-4 w-4 text-heart-red" />
-              Nearest Heart Hospitals
+              Nearest Cardiologist Hospitals
             </h4>
             <Button 
               onClick={getLocationAndHospitals}
@@ -520,13 +520,13 @@ export const EmergencyAlert = () => {
               variant="outline" 
               size="sm"
             >
-              {isLoadingHospitals ? "Finding..." : "Find Hospitals"}
+              {isLoadingHospitals ? "Finding..." : "Find Cardiologists"}
             </Button>
           </div>
           
           {isLoadingHospitals && (
             <div className="text-center py-4">
-              <p className="text-sm text-medical-gray-dark">Searching for nearby heart hospitals...</p>
+              <p className="text-sm text-medical-gray-dark">Searching for nearby cardiologist hospitals...</p>
             </div>
           )}
           
@@ -563,7 +563,7 @@ export const EmergencyAlert = () => {
             <div className="text-center py-6">
               <Hospital className="h-8 w-8 text-medical-gray mx-auto mb-2" />
               <p className="text-sm text-medical-gray-dark">
-                Click "Find Hospitals" to locate nearby heart hospitals with emergency contact numbers.
+                Click "Find Cardiologists" to locate nearby cardiologist hospitals with emergency contact numbers.
               </p>
             </div>
           )}
